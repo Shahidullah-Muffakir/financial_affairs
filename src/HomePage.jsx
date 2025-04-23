@@ -53,9 +53,66 @@ const NavigationItem = ({ item }) => (
 // GroupContractsTable Component
 const GroupContractsTable = () => {
   const [pageCount, setPageCount] = useState(0);
+  const totalPages = Math.ceil(data.length / 10);
+
+  const generatePagination = () => {
+    const pages = [];
+    const left = Math.max(2, pageCount); // Show up to two before current
+    const right = Math.min(totalPages - 1, pageCount + 3); // Show up to two after current
+
+    // Always show page 1
+    pages.push(
+      <a
+        key={1}
+        className={`paginate_button ${pageCount === 0 ? "current" : ""}`}
+        onClick={() => setPageCount(0)}
+      >
+        1
+      </a>
+    );
+
+    // Show left ellipsis if needed
+    if (left > 2) {
+      pages.push(<span key="left-ellipsis" className="ellipsis">…</span>);
+    }
+
+    // Middle page numbers
+    for (let i = left; i <= right; i++) {
+      pages.push(
+        <a
+          key={i}
+          className={`paginate_button ${pageCount === i - 1 ? "current" : ""}`}
+          onClick={() => setPageCount(i - 1)}
+        >
+          {i}
+        </a>
+      );
+    }
+
+    // Right ellipsis if needed
+    if (right < totalPages - 1) {
+      pages.push(<span key="right-ellipsis" className="ellipsis">…</span>);
+    }
+
+    // Always show last page
+    if (totalPages > 1) {
+      pages.push(
+        <a
+          key={totalPages}
+          className={`paginate_button ${pageCount === totalPages - 1 ? "current" : ""}`}
+          onClick={() => setPageCount(totalPages - 1)}
+        >
+          {totalPages}
+        </a>
+      );
+    }
+
+    return pages;
+  };
+
   return (
     <div className="container pt-2">
-      <p>
+        <p>
         A Group Purchasing Organization (GPO) procures contracts on behalf of
         the members it serves. The{" "}
         <a
@@ -115,194 +172,70 @@ const GroupContractsTable = () => {
             </button>
           </div>
         </div>
-        <table
-          className="table table-striped table-bordered dataTable no-footer"
-          id="gpo-contracts-table"
-          width="100%"
-          aria-describedby="gpo-contracts-table_info"
-          style={{ width: "100%" }}
-        >
-          <thead>
-            <tr>
-              <th
-                className="dt-control sorting_disabled sorting_asc"
-                rowSpan="1"
-                colSpan="1"
-                aria-label=""
-                style={{ width: "4px" }}
-              ></th>
-              <th
-                className="sorting"
-                tabIndex="0"
-                aria-controls="gpo-contracts-table"
-                rowSpan="1"
-                colSpan="1"
-                aria-label="GPO: activate to sort column ascending"
-                style={{ width: "85px" }}
-              >
-                GPO
-              </th>
-              <th
-                className="sorting"
-                tabIndex="0"
-                aria-controls="gpo-contracts-table"
-                rowSpan="1"
-                colSpan="1"
-                aria-label="Vendor Name: activate to sort column ascending"
-                style={{ width: "135px" }}
-              >
-                Vendor Name
-              </th>
-              <th
-                className="sorting"
-                tabIndex="0"
-                aria-controls="gpo-contracts-table"
-                rowSpan="1"
-                colSpan="1"
-                aria-label="Description: activate to sort column ascending"
-                style={{ width: "255px" }}
-              >
-                Description
-              </th>
-              <th
-                className="sorting"
-                tabIndex="0"
-                aria-controls="gpo-contracts-table"
-                rowSpan="1"
-                colSpan="1"
-                aria-label="Vendor HUB Type: activate to sort column ascending"
-                style={{ width: "55px" }}
-              >
-                Vendor HUB Type
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Table rows would be dynamically generated in a real app */}
-            {data
-              .slice(pageCount * 10, pageCount * 10 + 10)
-              .map((item, index) => (
-                <tr
-                  className={`${index % 2 === 0 ? "odd" : "even"}`}
-                  key={`row-${index}`}
-                >
-                  <td className="dt-control sorting_1"></td>
-                  <td>{item?.GPO}</td>
-                  <td>{item?.PrimaryContractSupplier}</td>
-                  <td>{item.ContractDescription}</td>
-                  <td>{item.VendorHubType}</td>
-                </tr>
-              ))}
+      <table
+        className="table table-striped table-bordered dataTable no-footer"
+        id="gpo-contracts-table"
+        width="100%"
+        aria-describedby="gpo-contracts-table_info"
+        style={{ width: "100%" }}
+      >
+        <thead>
+          <tr>
+            <th style={{ width: "4px" }}></th>
+            <th style={{ width: "85px" }}>GPO</th>
+            <th style={{ width: "135px" }}>Vendor Name</th>
+            <th style={{ width: "255px" }}>Description</th>
+            <th style={{ width: "55px" }}>Vendor HUB Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data
+            .slice(pageCount * 10, pageCount * 10 + 10)
+            .map((item, index) => (
+              <tr className={index % 2 === 0 ? "odd" : "even"} key={index}>
+                <td className="dt-control sorting_1"></td>
+                <td>{item?.GPO}</td>
+                <td>{item?.PrimaryContractSupplier}</td>
+                <td>{item?.ContractDescription}</td>
+                <td>{item?.VendorHubType}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
 
-            {/* More rows would go here */}
-          </tbody>
-        </table>
-        <div
-          className="dataTables_info"
-          id="gpo-contracts-table_info"
-          role="status"
-          aria-live="polite"
+      <div className="dataTables_info" role="status" aria-live="polite">
+        Showing {pageCount * 10 + 1} to{" "}
+        {Math.min((pageCount + 1) * 10, data.length)} of {data.length} entries
+      </div>
+
+      <div className="dataTables_paginate paging_simple_numbers">
+        <a
+          className={`paginate_button previous ${
+            pageCount === 0 ? "disabled" : ""
+          }`}
+          onClick={() => pageCount > 0 && setPageCount(pageCount - 1)}
         >
-          Showing {pageCount * 10 + 1} to {pageCount * 10 + 10} of {data.length+1}{" "}
-          entries
-        </div>
-        <div
-          className="dataTables_paginate paging_simple_numbers"
-          id="gpo-contracts-table_paginate"
+          Previous
+        </a>
+
+        <span>{generatePagination()}</span>
+
+        <a
+          className={`paginate_button next ${
+            pageCount === totalPages - 1 ? "disabled" : ""
+          }`}
+          onClick={() =>
+            pageCount < totalPages - 1 && setPageCount(pageCount + 1)
+          }
         >
-          <a
-            className={`paginate_button previous ${
-              pageCount === 0 ? "disabled" : ""
-            }`}
-            aria-controls="gpo-contracts-table"
-            data-dt-idx="0"
-            tabIndex="-1"
-            id="gpo-contracts-table_previous"
-            onClick={(e) => {
-              if (pageCount > 0) {
-                setPageCount(pageCount - 1)
-              }
-            } }
-          >
-            Previous
-          </a>
-          <span>
-            <a
-              className={`paginate_button ${pageCount === 0 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="1"
-              tabIndex="0"
-              onClick={(e) => setPageCount(0)}
-            >
-              1
-            </a>
-            <a
-              className={`paginate_button ${pageCount === 1 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="2"
-              tabIndex="0"
-              onClick={(e) => setPageCount(1)}
-            >
-              2
-            </a>
-            <a
-              className={`paginate_button ${pageCount === 2 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="3"
-              tabIndex="0"
-              onClick={(e) => setPageCount(2)}
-            >
-              3
-            </a>
-            <a
-              className={`paginate_button ${pageCount === 3 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="4"
-              tabIndex="0"
-              onClick={(e) => setPageCount(3)}
-            >
-              4
-            </a>
-            <a
-              className={`paginate_button ${pageCount === 4 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="5"
-              tabIndex="0"
-              onClick={(e) => setPageCount(4)}
-            >
-              5
-            </a>
-            <span className="ellipsis">…</span>
-            <a
-              className={`paginate_button ${pageCount === Math.floor(data.length / 10) - 1 ? "current" : ""}`}
-              aria-controls="gpo-contracts-table"
-              data-dt-idx="6"
-              tabIndex="0"
-              onClick={(e) => setPageCount(Math.floor(data.length / 10) - 1)}
-            >
-              {Math.floor(data.length / 10)}
-            </a>
-          </span>
-          <a
-            className={`paginate_button next ${
-              pageCount === Math.floor(data.length / 10) ? "disabled" : ""
-            }`}
-            aria-controls="gpo-contracts-table"
-            data-dt-idx="7"
-            tabIndex="0"
-            id="gpo-contracts-table_next"
-            onClick={(e) => {
-              if (pageCount > Math.floor(data.length / 10)) return;
-              setPageCount(pageCount + 1);
-            }}
-          >
-            Next
-          </a>
-        </div>
+          Next
+        </a>
+      </div>
       </div>
     </div>
   );
 };
+
 
 // Main Page Component
 const GroupContractsSearch = () => {

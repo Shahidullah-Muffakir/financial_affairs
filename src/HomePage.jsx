@@ -205,7 +205,7 @@ const GroupContractsTable = () => {
 
       <div className="dataTables_info" role="status" aria-live="polite">
         Showing {pageCount * 10 + 1} to{" "}
-        {Math.min((pageCount + 1) * 10, data.length)} of {data.length} entries
+        {Math.min((pageCount + 1) * 10, data.length)} of {data.length+1} entries
       </div>
 
       <div className="dataTables_paginate paging_simple_numbers">

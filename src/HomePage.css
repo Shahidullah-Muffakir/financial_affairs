@@ -1,0 +1,266 @@
+#site-navigation{
+    z-index:150 
+}
+.containerWrapper .site-content{
+    background:#fff;
+    margin:0 
+}
+#site-navigation .containerWrapper{
+    margin:0;
+    padding:0 
+}
+
+
+.site-top-Title{
+    font-weight:500;
+    margin:.3em 0 .6em;
+    display:block;
+    font-family:inherit;
+    line-height:1.1;
+    font-size:2.75rem;
+    text-rendering:optimizelegibility;
+    background-color:#FFF;
+    box-sizing:border-box;
+    color:#0c2340;
+    cursor:auto;
+    float:left;
+    width:100%;
+    margin-bottom:20px 
+}
+.site-top-Title a{
+    color:#f15a22;
+    color:#0c2340 
+}
+.site-top-Title a:hover{
+    color:#0c2340;
+    color:#f15a22 
+}
+#site-content .containerWrapper,#site-top .containerWrapper,#site-banner .containerWrapper{
+    background:#fff;
+    margin:0 
+}
+#site-top,#site-navigation,#site-banner,#site-content,#site-footer{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif 
+}
+#site-top,#site-content{
+    margin-top:2em;
+    margin-top:1.1em 
+}
+#site-content{
+    margin-top:0;
+    padding-top:0 
+}
+#site-content button#dropdownMenuButton{
+    height:40px;
+    background-color:#fff;
+    color:gray;
+    border:1px solid gray 
+}
+#site-content div.containerWrapper{
+    padding:0;
+    padding:1.5em 0 
+}
+
+#main-content li{
+    padding:4px 0 
+}
+#site-footer a:link{
+    color:#0275d3!important 
+}
+#site-footer a:hover{
+    color:#0275d3 
+}
+#departmentalPageNav{
+    background:#0c2340;
+    margin-left:0;
+    margin-bottom:0;
+    padding-left:1rem 
+}
+#departmentalPageNav li a:hover{
+    color:#f15a22;
+    width:100% 
+}
+#departmentalPageNav li{
+    display:inline-block;
+    margin-right:0;
+    position:relative;
+    color:#fff;
+    padding:15px 10px!important;
+    cursor:default 
+}
+#departmentalPageNav li a{
+    border-bottom:none;
+    color:#fff;
+    padding:15px 0;
+    text-decoration:none 
+}
+#departmentalPageNav li ul li{
+    display:block;
+    border-top:1px solid #0D2F59;
+    background:#0C2340;
+    border-top:1px solid #3D3D3D 
+}
+
+#departmentalPageNav li:hover ul{
+    display:block;
+    opacity:1;
+    visibility:visible 
+}
+#departmentalPageNav ul{
+    z-index:250 
+}
+#departmentalPageNav li ul{
+    padding:0;
+    position:absolute;
+    top:50px;
+    left:-3px;
+    width:245px;
+    display:none;
+    opacity:0;
+    visibility:hidden;
+    border-top:3px solid #f15a22 
+}
+ul#departmentalPageNav li ul{
+    width:265px;
+    margin:0 0 1.2em 1.1em;
+    z-index:16;
+    left:-10px;
+    width:245px 
+}
+
+#site-navigation .containerWrapper{
+    margin:0;
+    padding:0 
+}
+.breadcrumbs{
+    padding-top:.9em;
+    padding-bottom:.45em;
+    font-size:.75em 
+}
+.breadcrumbs span{
+    padding:0 .2em 
+}
+.breadcrumbs a{
+    color:#f15a22;
+    color:#0c2340 
+}
+.breadcrumbs a:hover{
+    color:#f15a22 
+}
+.breadcrumbs i{
+    color:#f15a22 
+}
+
+/* BEGIN H-TAG Customizations */
+h1,h2,h3,h4,h5,h6{
+    font-weight:500;
+    color:#0c2340 ;
+}
+h1 a,h2 a,h3 a{
+    color:#0275d3!important;
+}
+.herosection-link{
+    color:#0275d3!important;
+    text-decoration:none;
+
+    &:hover{
+        color:#f15a22!important;
+        text-decoration: none;
+        background-color: transparent;
+    }
+}
+
+h1{
+    font-weight:700 
+}
+h2{
+    font-size:1.78rem 
+}
+h3{
+    font-size:1.75rem;
+    font-size:1.5rem 
+}
+
+h2{
+    color:#f15a22;
+    font-weight:500 
+}
+
+h3{
+    color:#0c2340;
+    font-weight:500 
+}
+h3 a:hover{
+    color:#f15a22!important 
+}
+
+h4{
+    color:#0c2340;
+    font-size:1.25rem;
+    font-size:100% 
+}
+h4 {
+    font-size: 1.25rem;
+}
+h5{
+    font-size:1.15rem 
+}
+
+/* END Custom Classes */
+/* START custom divider line options 11-2024 */
+hr{
+    border:thin solid #0C2340;
+    margin:2em 0 
+}
+hr{
+    border:0;
+    border-bottom:solid 1px;
+    margin:2rem 0 
+}
+
+#header{
+    background:#FFF;
+    color:rgba(255,255,255,0.5);
+    -moz-align-items:center;
+    -webkit-align-items:center;
+    -ms-align-items:center;
+    align-items:center;
+    display:-moz-flex;
+    display:-webkit-flex;
+    display:-ms-flex;
+    display:flex;
+    -moz-justify-content:space-between;
+    -webkit-justify-content:space-between;
+    -ms-justify-content:space-between;
+    justify-content:space-between;
+    cursor:default;
+    height:3.25rem;
+    left:0;
+    line-height:3.25rem;
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:10001 
+}
+@media screen and (max-width: 980px){
+    #header{
+        height:44px;
+        line-height:44px 
+   }
+}
+@media screen and (max-width: 480px){
+    #header{
+        min-width:320px 
+   }
+}
+
+.table td,.table th{
+    padding-top:.35rem 
+}
+.table td h2,.table th h2{
+    font-size:1rem;
+    color:#f15a22;
+    margin-bottom:.07em 
+}
+
+

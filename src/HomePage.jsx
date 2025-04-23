@@ -203,7 +203,7 @@ const GroupContractsTable = () => {
           role="status"
           aria-live="polite"
         >
-          Showing {pageCount * 10 + 1} to {pageCount * 10 + 10} of {data.length}{" "}
+          Showing {pageCount * 10 + 1} to {pageCount * 10 + 10} of {data.length+1}{" "}
           entries
         </div>
         <div

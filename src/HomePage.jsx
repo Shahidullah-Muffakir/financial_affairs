@@ -141,7 +141,28 @@ const Row = ({ item, index }) => {
 // GroupContractsTable Component
 const GroupContractsTable = () => {
   const [pageCount, setPageCount] = useState(0);
-  const totalPages = Math.ceil(data.length / 10);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const filteredData = data.filter((item) => {
+    const keyword = searchTerm.toLowerCase();
+    return (
+      item?.GPO?.toLowerCase().includes(keyword) ||
+      item?.PrimaryContractSupplier?.toLowerCase().includes(keyword) ||
+      item?.ContractDescription?.toLowerCase().includes(keyword) ||
+      item?.VendorHubType?.toLowerCase().includes(keyword) ||
+      item?.ContractNumber?.toLowerCase().includes(keyword) ||
+      item?.["Vendor/Reseller"]?.toLowerCase().includes(keyword) ||
+      item?.VendorContactName?.toLowerCase().includes(keyword) ||
+      item?.VendorEmail?.toLowerCase().includes(keyword) ||
+      String(item?.VendorPhone || "").toLowerCase().includes(keyword) ||
+      item?.VendorAddress?.toLowerCase().includes(keyword) ||
+      item?.ContractLink?.toLowerCase().includes(keyword) ||
+      item?.ExpirationDate?.toLowerCase().includes(keyword) ||
+      item?.GPOContactEmail?.toLowerCase().includes(keyword) 
+      
+    );
+  });
+  const totalPages = Math.ceil(filteredData.length / 10);
 
   const generatePagination = () => {
     const pages = [];
@@ -250,10 +271,16 @@ const GroupContractsTable = () => {
         <div className="form-group basicSearch">
           <label htmlFor="basic-search">Basic Search</label>
           <input
-            className="form-control mx-sm-3"
-            id="basic-search"
-            type="basic-search"
-          />
+  className="form-control mx-sm-3"
+  id="basic-search"
+  type="text"
+  value={searchTerm}
+  onChange={(e) => {
+    setSearchTerm(e.target.value);
+    setPageCount(0); 
+  }}
+/>
+
         </div>
       </form>
       <div
@@ -287,7 +314,7 @@ const GroupContractsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {data
+            {filteredData
               .slice(pageCount * 10, pageCount * 10 + 10)
               .map((item, index) => (
                 <Row item={item} index={index} />
@@ -297,7 +324,7 @@ const GroupContractsTable = () => {
 
         <div className="dataTables_info" role="status" aria-live="polite">
           Showing {pageCount * 10 + 1} to{" "}
-          {Math.min((pageCount + 1) * 10, data.length)} of {data.length + 1}{" "}
+          {Math.min((pageCount + 1) * 10, filteredData.length)} of {filteredData.length + 1}{" "}
           entries
         </div>
 

@@ -48,39 +48,95 @@ const NavigationItem = ({ item }) => (
   </li>
 );
 
-const Row= ({ item, index }) => {
+const Row = ({ item, index }) => {
   const [viewDetails, setViewDetails] = useState(false);
-  return(
+  return (
     <>
-    <tr className={`${index % 2 === 0 ? "odd" : "even"} dt-hasChild shown `} key={index}>
-      <td className={`dt-control sorting_1 ${viewDetails ? "expanded": ''}`} onClick={() => setViewDetails(!viewDetails)}></td>
-      <td>{item?.GPO}</td>
-      <td>{item?.PrimaryContractSupplier}</td>
-      <td>{item?.ContractDescription}</td>
-      <td>{item?.VendorHubType}</td>
-    </tr>
-    {viewDetails &&
-      <tr>
-      <td colSpan="5">
-        <table cellPadding="5" cellSpacing="0" border="0" style={{ paddingLeft: '50px' }}>
-          <tbody>
-            <tr><td><strong>Vendor Contact Name:</strong></td><td>{item?.VendorContactName}</td></tr>
-            <tr><td><strong>Vendor Address:</strong></td><td>{item?.VendorAddress}</td></tr>
-            <tr><td><strong>Vendor Phone:</strong></td><td>{item?.VendorPhone}</td></tr>
-            <tr><td><strong>Vendor Email:</strong></td><td>{item?.VendorEmail}</td></tr>
-            <tr><td><strong>Contract Number:</strong></td><td>{item?.ContractNumber}</td></tr>
-            <tr><td><strong>Primary Contract Owner:</strong></td><td>{item?.PrimaryContractSupplier}</td></tr>
-            <tr><td><strong>Contract Link:</strong></td><td>{item?.ContractLink}</td></tr>
-            <tr><td><strong>Expiration Date:</strong></td><td>{item?.ExpirationDate}</td></tr>
-            <tr><td><strong>GPO Contact Email:</strong></td><td>{item?.GPOContactEmail}</td></tr>
-          </tbody>
-        </table>
-      </td>
-    </tr>
-}
+      <tr
+        className={`${index % 2 === 0 ? "odd" : "even"} dt-hasChild shown `}
+        key={index}
+      >
+        <td
+          className={`dt-control sorting_1 ${viewDetails ? "expanded" : ""}`}
+          onClick={() => setViewDetails(!viewDetails)}
+        ></td>
+        <td>{item?.GPO}</td>
+        <td>{item?.PrimaryContractSupplier}</td>
+        <td>{item?.ContractDescription}</td>
+        <td>{item?.VendorHubType}</td>
+      </tr>
+      {viewDetails && (
+        <tr>
+          <td colSpan="5">
+            <table
+              cellPadding="5"
+              cellSpacing="0"
+              border="0"
+              style={{ paddingLeft: "50px" }}
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Vendor Contact Name:</strong>
+                  </td>
+                  <td>{item?.VendorContactName}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Vendor Address:</strong>
+                  </td>
+                  <td>{item?.VendorAddress}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Vendor Phone:</strong>
+                  </td>
+                  <td>{item?.VendorPhone}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Vendor Email:</strong>
+                  </td>
+                  <td>{item?.VendorEmail}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Contract Number:</strong>
+                  </td>
+                  <td>{item?.ContractNumber}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Primary Contract Owner:</strong>
+                  </td>
+                  <td>{item?.PrimaryContractSupplier}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Contract Link:</strong>
+                  </td>
+                  <td>{item?.ContractLink}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Expiration Date:</strong>
+                  </td>
+                  <td>{item?.ExpirationDate}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>GPO Contact Email:</strong>
+                  </td>
+                  <td>{item?.GPOContactEmail}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      )}
     </>
-  )
-}
+  );
+};
 
 // GroupContractsTable Component
 const GroupContractsTable = () => {
@@ -105,7 +161,11 @@ const GroupContractsTable = () => {
 
     // Show left ellipsis if needed
     if (left > 2) {
-      pages.push(<span key="left-ellipsis" className="ellipsis">…</span>);
+      pages.push(
+        <span key="left-ellipsis" className="ellipsis">
+          …
+        </span>
+      );
     }
 
     // Middle page numbers
@@ -123,7 +183,11 @@ const GroupContractsTable = () => {
 
     // Right ellipsis if needed
     if (right < totalPages - 1) {
-      pages.push(<span key="right-ellipsis" className="ellipsis">…</span>);
+      pages.push(
+        <span key="right-ellipsis" className="ellipsis">
+          …
+        </span>
+      );
     }
 
     // Always show last page
@@ -131,7 +195,9 @@ const GroupContractsTable = () => {
       pages.push(
         <a
           key={totalPages}
-          className={`paginate_button ${pageCount === totalPages - 1 ? "current" : ""}`}
+          className={`paginate_button ${
+            pageCount === totalPages - 1 ? "current" : ""
+          }`}
           onClick={() => setPageCount(totalPages - 1)}
         >
           {totalPages}
@@ -144,7 +210,7 @@ const GroupContractsTable = () => {
 
   return (
     <div className="container pt-2">
-        <p>
+      <p>
         A Group Purchasing Organization (GPO) procures contracts on behalf of
         the members it serves. The{" "}
         <a
@@ -180,8 +246,8 @@ const GroupContractsTable = () => {
         .
       </p>
       <p>&nbsp;</p>
-      <form className="form-inline">
-        <div className="form-group">
+      <form className="form-inline ">
+        <div className="form-group basicSearch">
           <label htmlFor="basic-search">Basic Search</label>
           <input
             className="form-control mx-sm-3"
@@ -204,66 +270,64 @@ const GroupContractsTable = () => {
             </button>
           </div>
         </div>
-      <table
-        className="table table-striped table-bordered dataTable no-footer"
-        id="gpo-contracts-table"
-        width="100%"
-        aria-describedby="gpo-contracts-table_info"
-        style={{ width: "100%" }}
-      >
-        <thead>
-          <tr>
-            <th style={{ width: "4px" }}></th>
-            <th style={{ width: "85px" }}>GPO</th>
-            <th style={{ width: "135px" }}>Vendor Name</th>
-            <th style={{ width: "255px" }}>Description</th>
-            <th style={{ width: "55px" }}>Vendor HUB Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data
-            .slice(pageCount * 10, pageCount * 10 + 10)
-            .map((item, index) => (
-              <Row item={item} index={index}/>
-            ))}
-        </tbody>
-      </table>
-
-  
-
-      <div className="dataTables_info" role="status" aria-live="polite">
-        Showing {pageCount * 10 + 1} to{" "}
-        {Math.min((pageCount + 1) * 10, data.length)} of {data.length+1} entries
-      </div>
-
-      <div className="dataTables_paginate paging_simple_numbers">
-        <a
-          className={`paginate_button previous ${
-            pageCount === 0 ? "disabled" : ""
-          }`}
-          onClick={() => pageCount > 0 && setPageCount(pageCount - 1)}
+        <table
+          className="table table-striped table-bordered dataTable no-footer"
+          id="gpo-contracts-table"
+          width="100%"
+          aria-describedby="gpo-contracts-table_info"
+          style={{ width: "100%" }}
         >
-          Previous
-        </a>
+          <thead>
+            <tr>
+              <th style={{ width: "4px" }}></th>
+              <th style={{ width: "85px" }}>GPO</th>
+              <th style={{ width: "135px" }}>Vendor Name</th>
+              <th style={{ width: "255px" }}>Description</th>
+              <th style={{ width: "55px" }}>Vendor HUB Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data
+              .slice(pageCount * 10, pageCount * 10 + 10)
+              .map((item, index) => (
+                <Row item={item} index={index} />
+              ))}
+          </tbody>
+        </table>
 
-        <span>{generatePagination()}</span>
+        <div className="dataTables_info" role="status" aria-live="polite">
+          Showing {pageCount * 10 + 1} to{" "}
+          {Math.min((pageCount + 1) * 10, data.length)} of {data.length + 1}{" "}
+          entries
+        </div>
 
-        <a
-          className={`paginate_button next ${
-            pageCount === totalPages - 1 ? "disabled" : ""
-          }`}
-          onClick={() =>
-            pageCount < totalPages - 1 && setPageCount(pageCount + 1)
-          }
-        >
-          Next
-        </a>
-      </div>
+        <div className="dataTables_paginate paging_simple_numbers">
+          <a
+            className={`paginate_button previous ${
+              pageCount === 0 ? "disabled" : ""
+            }`}
+            onClick={() => pageCount > 0 && setPageCount(pageCount - 1)}
+          >
+            Previous
+          </a>
+
+          <span>{generatePagination()}</span>
+
+          <a
+            className={`paginate_button next ${
+              pageCount === totalPages - 1 ? "disabled" : ""
+            }`}
+            onClick={() =>
+              pageCount < totalPages - 1 && setPageCount(pageCount + 1)
+            }
+          >
+            Next
+          </a>
+        </div>
       </div>
     </div>
   );
 };
-
 
 // Main Page Component
 const GroupContractsSearch = () => {
@@ -292,8 +356,6 @@ const GroupContractsSearch = () => {
           </div>
         </div>
       </section>
-
-
 
       <section
         className="container"

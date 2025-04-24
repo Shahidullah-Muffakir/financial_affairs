@@ -322,10 +322,12 @@ const GroupContractsTable = () => {
           </tbody>
         </table>
 
-        <div className="dataTables_info" role="status" aria-live="polite">
-          Showing {pageCount * 10 + 1} to{" "}
-          {Math.min((pageCount + 1) * 10, filteredData.length)} of {filteredData.length + 1}{" "}
+        <div className="dataTables_info" role="status" aria-live="polite" style={{display:'flex', alignContent:'center'}}>
+          Showing { Math.min(filteredData.length,pageCount * 10 + 1)} to{" "}
+          {Math.min((pageCount + 1) * 10, filteredData.length)} of {filteredData.length}{" "}
           entries
+          {!!searchTerm && <span style={{paddingTop:0, paddingLeft:4}} className="dataTables_info" role="status" aria-live="polite">(filtered from {data.length} total entries)</span>}
+
         </div>
 
         <div className="dataTables_paginate paging_simple_numbers">

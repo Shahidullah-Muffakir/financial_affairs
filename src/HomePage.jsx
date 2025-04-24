@@ -48,7 +48,39 @@ const NavigationItem = ({ item }) => (
   </li>
 );
 
-
+const Row= ({ item, index }) => {
+  const [viewDetails, setViewDetails] = useState(false);
+  return(
+    <>
+    <tr className={`${index % 2 === 0 ? "odd" : "even"} dt-hasChild shown `} key={index}>
+      <td className={`dt-control sorting_1 ${viewDetails ? "expanded": ''}`} onClick={() => setViewDetails(!viewDetails)}></td>
+      <td>{item?.GPO}</td>
+      <td>{item?.PrimaryContractSupplier}</td>
+      <td>{item?.ContractDescription}</td>
+      <td>{item?.VendorHubType}</td>
+    </tr>
+    {viewDetails &&
+      <tr>
+      <td colSpan="5">
+        <table cellPadding="5" cellSpacing="0" border="0" style={{ paddingLeft: '50px' }}>
+          <tbody>
+            <tr><td><strong>Vendor Contact Name:</strong></td><td>{item?.VendorContactName}</td></tr>
+            <tr><td><strong>Vendor Address:</strong></td><td>{item?.VendorAddress}</td></tr>
+            <tr><td><strong>Vendor Phone:</strong></td><td>{item?.VendorPhone}</td></tr>
+            <tr><td><strong>Vendor Email:</strong></td><td>{item?.VendorEmail}</td></tr>
+            <tr><td><strong>Contract Number:</strong></td><td>{item?.ContractNumber}</td></tr>
+            <tr><td><strong>Primary Contract Owner:</strong></td><td>{item?.PrimaryContractSupplier}</td></tr>
+            <tr><td><strong>Contract Link:</strong></td><td>{item?.ContractLink}</td></tr>
+            <tr><td><strong>Expiration Date:</strong></td><td>{item?.ExpirationDate}</td></tr>
+            <tr><td><strong>GPO Contact Email:</strong></td><td>{item?.GPOContactEmail}</td></tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+}
+    </>
+  )
+}
 
 // GroupContractsTable Component
 const GroupContractsTable = () => {
@@ -192,16 +224,12 @@ const GroupContractsTable = () => {
           {data
             .slice(pageCount * 10, pageCount * 10 + 10)
             .map((item, index) => (
-              <tr className={index % 2 === 0 ? "odd" : "even"} key={index}>
-                <td className="dt-control sorting_1"></td>
-                <td>{item?.GPO}</td>
-                <td>{item?.PrimaryContractSupplier}</td>
-                <td>{item?.ContractDescription}</td>
-                <td>{item?.VendorHubType}</td>
-              </tr>
+              <Row item={item} index={index}/>
             ))}
         </tbody>
       </table>
+
+  
 
       <div className="dataTables_info" role="status" aria-live="polite">
         Showing {pageCount * 10 + 1} to{" "}

@@ -142,7 +142,8 @@ const Row = ({ item, index }) => {
 const GroupContractsTable = () => {
   const [pageCount, setPageCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+
   const filteredData = data.filter((item) => {
     const keyword = searchTerm.toLowerCase();
     return (
@@ -162,7 +163,7 @@ const GroupContractsTable = () => {
       
     );
   });
-  const totalPages = Math.ceil(filteredData.length / 10);
+  const totalPages = Math.ceil(filteredData.length / entriesPerPage);
 
   const generatePagination = () => {
     const pages = [];
@@ -282,6 +283,29 @@ const GroupContractsTable = () => {
 />
 
         </div>
+        <div className="form-group ml-3 "     style={{ width: "100px", margin:'10px 0px' }}
+        >
+  <label htmlFor="entriesPerPage" style={{ marginRight: "5px" }}>
+    Show
+  </label>
+  <select
+    id="entriesPerPage"
+    className="form-control"
+    value={entriesPerPage}
+    onChange={(e) => {
+      setEntriesPerPage(e.target.value === "All" ? filteredData.length : parseInt(e.target.value));
+      setPageCount(0);
+    }}
+  >
+    <option value={10}>10</option>
+    <option value={25}>25</option>
+    <option value={50}>50</option>
+    <option value={100}>100</option>
+    <option value={filteredData.length}>All</option>
+  </select>
+  <span style={{ marginLeft: "5px" }}>entries</span>
+</div>
+
       </form>
       <div
         id="gpo-contracts-table_wrapper"
@@ -315,17 +339,18 @@ const GroupContractsTable = () => {
           </thead>
           <tbody>
             {filteredData
-              .slice(pageCount * 10, pageCount * 10 + 10)
+              .slice(pageCount * entriesPerPage, pageCount * entriesPerPage + entriesPerPage)
               .map((item, index) => (
                 <Row item={item} index={index} />
               ))}
+
           </tbody>
         </table>
 
         <div className="dataTables_info" role="status" aria-live="polite" style={{display:'flex', alignContent:'center'}}>
-          Showing { Math.min(filteredData.length,pageCount * 10 + 1)} to{" "}
-          {Math.min((pageCount + 1) * 10, filteredData.length)} of {filteredData.length}{" "}
-          entries
+        Showing {Math.min(filteredData.length, pageCount * entriesPerPage + 1)} to{" "}
+{Math.min((pageCount + 1) * entriesPerPage, filteredData.length)} of {filteredData.length} entries
+
           {!!searchTerm && <span style={{paddingTop:0, paddingLeft:4}} className="dataTables_info" role="status" aria-live="polite">(filtered from {data.length} total entries)</span>}
 
         </div>

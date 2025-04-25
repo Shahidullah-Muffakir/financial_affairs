@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./Tables.css";
 import "./HomePage.css";
-import data from "./financial_data.json";
-console.log("data123", data);
+import { useEffect } from "react";
+import * as XLSX from "xlsx";
+import axios from "axios";
 
 // Breadcrumbs Component
 const Breadcrumbs = () => (
@@ -143,24 +144,46 @@ const GroupContractsTable = () => {
   const [pageCount, setPageCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [rawData, setRawData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("csvdata.xlsx", {
+          responseType: "arraybuffer",
+        });
 
-  const filteredData = data.filter((item) => {
+        const workbook = XLSX.read(response.data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        setRawData(jsonData);
+        console.log(jsonData);
+      } catch (error) {
+        console.error("Error fetching or parsing Excel file:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredData = rawData.filter((item) => {
     const keyword = searchTerm.toLowerCase();
     return (
-      item?.GPO?.toLowerCase().includes(keyword) ||
-      item?.PrimaryContractSupplier?.toLowerCase().includes(keyword) ||
-      item?.ContractDescription?.toLowerCase().includes(keyword) ||
-      item?.VendorHubType?.toLowerCase().includes(keyword) ||
-      item?.ContractNumber?.toLowerCase().includes(keyword) ||
-      item?.["Vendor/Reseller"]?.toLowerCase().includes(keyword) ||
-      item?.VendorContactName?.toLowerCase().includes(keyword) ||
-      item?.VendorEmail?.toLowerCase().includes(keyword) ||
-      String(item?.VendorPhone || "").toLowerCase().includes(keyword) ||
-      item?.VendorAddress?.toLowerCase().includes(keyword) ||
-      item?.ContractLink?.toLowerCase().includes(keyword) ||
-      item?.ExpirationDate?.toLowerCase().includes(keyword) ||
-      item?.GPOContactEmail?.toLowerCase().includes(keyword) 
-      
+      String(item?.GPO)?.toLowerCase().includes(keyword) ||
+      String(item?.PrimaryContractSupplier)?.toLowerCase().includes(keyword) ||
+      String(item?.ContractDescription)?.toLowerCase().includes(keyword) ||
+      String(item?.VendorHubType)?.toLowerCase().includes(keyword) ||
+      String(item?.ContractNumber)?.toLowerCase().includes(keyword) ||
+      String(item?.["Vendor/Reseller"])?.toLowerCase().includes(keyword) ||
+      String(item?.VendorContactName)?.toLowerCase().includes(keyword) ||
+      String(item?.VendorEmail)?.toLowerCase().includes(keyword) ||
+      String(item?.VendorPhone || "")
+        ?.toLowerCase()
+        .includes(keyword) ||
+      String(item?.VendorAddress)?.toLowerCase().includes(keyword) ||
+      String(item?.ContractLink)?.toLowerCase().includes(keyword) ||
+      String(item?.ExpirationDate)?.toLowerCase().includes(keyword) ||
+      String(item?.GPOContactEmail)?.toLowerCase().includes(keyword)
     );
   });
   const totalPages = Math.ceil(filteredData.length / entriesPerPage);
@@ -272,40 +295,44 @@ const GroupContractsTable = () => {
         <div className="form-group basicSearch">
           <label htmlFor="basic-search">Basic Search</label>
           <input
-  className="form-control mx-sm-3"
-  id="basic-search"
-  type="text"
-  value={searchTerm}
-  onChange={(e) => {
-    setSearchTerm(e.target.value);
-    setPageCount(0); 
-  }}
-/>
-
+            className="form-control mx-sm-3"
+            id="basic-search"
+            type="text"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPageCount(0);
+            }}
+          />
         </div>
-        <div className="form-group ml-3 "     style={{ width: "100px", margin:'10px 0px' }}
+        <div
+          className="form-group ml-3 "
+          style={{ width: "100px", margin: "10px 0px" }}
         >
-  <label htmlFor="entriesPerPage" style={{ marginRight: "5px" }}>
-    Show
-  </label>
-  <select
-    id="entriesPerPage"
-    className="form-control"
-    value={entriesPerPage}
-    onChange={(e) => {
-      setEntriesPerPage(e.target.value === "All" ? filteredData.length : parseInt(e.target.value));
-      setPageCount(0);
-    }}
-  >
-    <option value={10}>10</option>
-    <option value={25}>25</option>
-    <option value={50}>50</option>
-    <option value={100}>100</option>
-    <option value={filteredData.length}>All</option>
-  </select>
-  <span style={{ marginLeft: "5px" }}>entries</span>
-</div>
-
+          <label htmlFor="entriesPerPage" style={{ marginRight: "5px" }}>
+            Show
+          </label>
+          <select
+            id="entriesPerPage"
+            className="form-control"
+            value={entriesPerPage}
+            onChange={(e) => {
+              setEntriesPerPage(
+                e.target.value === "All"
+                  ? filteredData.length
+                  : parseInt(e.target.value)
+              );
+              setPageCount(0);
+            }}
+          >
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={filteredData.length}>All</option>
+          </select>
+          <span style={{ marginLeft: "5px" }}>entries</span>
+        </div>
       </form>
       <div
         id="gpo-contracts-table_wrapper"
@@ -338,21 +365,45 @@ const GroupContractsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData
-              .slice(pageCount * entriesPerPage, pageCount * entriesPerPage + entriesPerPage)
-              .map((item, index) => (
-                <Row item={item} index={index} />
-              ))}
-
+            {rawData?.length === 0 ? (
+              <tr className="odd">
+                <td colSpan="100%" className="text-center">
+                  Loading...
+                </td>
+              </tr>
+            ) : (
+              filteredData
+                .slice(
+                  pageCount * entriesPerPage,
+                  pageCount * entriesPerPage + entriesPerPage
+                )
+                .map((item, index) => (
+                  <Row item={item} index={index} key={index} />
+                ))
+            )}
           </tbody>
         </table>
 
-        <div className="dataTables_info" role="status" aria-live="polite" style={{display:'flex', alignContent:'center'}}>
-        Showing {Math.min(filteredData.length, pageCount * entriesPerPage + 1)} to{" "}
-{Math.min((pageCount + 1) * entriesPerPage, filteredData.length)} of {filteredData.length} entries
-
-          {!!searchTerm && <span style={{paddingTop:0, paddingLeft:4}} className="dataTables_info" role="status" aria-live="polite">(filtered from {data.length} total entries)</span>}
-
+        <div
+          className="dataTables_info"
+          role="status"
+          aria-live="polite"
+          style={{ display: "flex", alignContent: "center" }}
+        >
+          Showing{" "}
+          {Math.min(filteredData.length, pageCount * entriesPerPage + 1)} to{" "}
+          {Math.min((pageCount + 1) * entriesPerPage, filteredData.length)} of{" "}
+          {filteredData.length} entries
+          {!!searchTerm && (
+            <span
+              style={{ paddingTop: 0, paddingLeft: 4 }}
+              className="dataTables_info"
+              role="status"
+              aria-live="polite"
+            >
+              (filtered from {rawData.length} total entries)
+            </span>
+          )}
         </div>
 
         <div className="dataTables_paginate paging_simple_numbers">
@@ -421,7 +472,7 @@ const GroupContractsSearch = () => {
         <div className="containerWrapper">
           <div className="row">
             <div className="col-12 departmentalPageBanner">
-              <img alt="" data-path="" src="" width="100%" />
+              <img alt="" data-path="" width="100%" />
             </div>
           </div>
         </div>

@@ -147,7 +147,7 @@ const GroupContractsTable = () => {
   const [rawData, setRawData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-const url="https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx"
+      const url = "http://localhost:3001/api/excel";
       try {
         const response = await axios.get(url, {
           responseType: "arraybuffer",

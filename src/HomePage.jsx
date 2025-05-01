@@ -147,16 +147,12 @@ const GroupContractsTable = () => {
   const [rawData, setRawData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const url = "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
+      const functionUrl = "/.netlify/functions/proxy-excel";
       try {
-        const response = await axios.get(url, {
-          responseType: "arraybuffer",
-          headers: {
-            'Origin': 'https://financial-affairs2025.netlify.app/',
-            'Referer': 'https://financial-affairs2025.netlify.app/',
-          },
-          withCredentials: true 
+        const response = await axios.get(functionUrl, {
+          responseType: "arraybuffer"
         });
+  
 
         const workbook = XLSX.read(response.data, { type: "array" });
         const sheetName = workbook.SheetNames[0];

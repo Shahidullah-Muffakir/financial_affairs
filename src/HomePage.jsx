@@ -147,7 +147,7 @@ const GroupContractsTable = () => {
   const [rawData, setRawData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const url = "http://localhost:3001/api/excel";
+      const url = "https://financial-affairs2025.netlify.app/api/excel";
       try {
         const response = await axios.get(url, {
           responseType: "arraybuffer",

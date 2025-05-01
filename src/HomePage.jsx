@@ -147,7 +147,9 @@ const GroupContractsTable = () => {
   const [rawData, setRawData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const url = "https://financial-affairs2025.netlify.app/api/excel";
+      const url = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:3001/api/excel'
+        : 'https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx';
       try {
         const response = await axios.get(url, {
           responseType: "arraybuffer",

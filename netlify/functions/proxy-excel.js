@@ -12,6 +12,7 @@ exports.handler = async function(event, context) {
         }
       }
     );
+    console.log('netlifyfunctionreponse', response);
     
     return {
       statusCode: 200,
@@ -23,7 +24,7 @@ exports.handler = async function(event, context) {
       isBase64Encoded: true
     };
   } catch (error) {
-    console.log('Error:', error);
+    console.log('Error123netlifyfunctionreponse:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to fetch Excel file' })

@@ -151,6 +151,11 @@ const GroupContractsTable = () => {
       try {
         const response = await axios.get(url, {
           responseType: "arraybuffer",
+          headers: {
+            'Origin': 'https://financial-affairs2025.netlify.app/',
+            'Referer': 'https://financial-affairs2025.netlify.app/',
+          },
+          withCredentials: true 
         });
 
         const workbook = XLSX.read(response.data, { type: "array" });

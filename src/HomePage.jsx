@@ -147,7 +147,7 @@ const GroupContractsTable = () => {
   const [rawData, setRawData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const functionUrl = "/.netlify/functions/proxy-excel";
+      const functionUrl = "https://newserver-ouxh.onrender.com/download";
       try {
         const response = await axios.get(functionUrl, {
           responseType: "arraybuffer"

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import data from './financial_data.json'
 import "./Tables.css";
 import "./HomePage.css";
 import { useEffect } from "react";
@@ -165,7 +164,17 @@ const GroupContractsTable = () => {
         "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
 
       try {
-        setRawData(data);
+        const response = await axios.get(url, {
+          responseType: "arraybuffer",
+        });
+        console.log("reponse7777", response);
+
+        const workbook = XLSX.read(response.data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        setRawData(jsonData);
+
       } catch (error) {
         console.error("Error fetching or parsing Excel file:", error);
       }

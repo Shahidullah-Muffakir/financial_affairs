@@ -99,7 +99,11 @@ const Row = ({ item, index }) => {
                   <td>
                     <strong>Vendor Email:</strong>
                   </td>
-                  <td>{item?.VendorEmail}</td>
+                  <td> 
+                    <a href={`mailto:${item?.VendorEmail}`} style={{ color: '#007bff', textDecoration: 'underline' }}>
+                    {item?.VendorEmail}
+                    </a>
+                    </td>
                 </tr>
                 <tr>
                   <td>
@@ -129,7 +133,11 @@ const Row = ({ item, index }) => {
                   <td>
                     <strong>GPO Contact Email:</strong>
                   </td>
-                  <td>{item?.GPOContactEmail}</td>
+                  <td>
+                    <a href={`mailto:${item?.GPOContactEmail}`} style={{ color: '#007bff', textDecoration: 'underline' }}>
+                    {item?.GPOContactEmail}
+                    </a>
+                    </td>
                 </tr>
               </tbody>
             </table>

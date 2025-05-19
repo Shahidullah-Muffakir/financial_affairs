@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import data from './financial_data.json'
 import "./Tables.css";
 import "./HomePage.css";
 import { useEffect } from "react";
@@ -145,23 +146,18 @@ const GroupContractsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [rawData, setRawData] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'ascending'
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       const url =
         "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
 
       try {
-        const response = await axios.get(url, {
-          responseType: "arraybuffer",
-        });
-        console.log("reponse7777", response);
-
-        const workbook = XLSX.read(response.data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        setRawData(jsonData);
-        console.log(jsonData);
+        setRawData(data);
       } catch (error) {
         console.error("Error fetching or parsing Excel file:", error);
       }
@@ -169,6 +165,35 @@ const GroupContractsTable = () => {
 
     fetchData();
   }, []);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedData = (data) => {
+    if (!sortConfig.key) return data;
+
+    return [...data].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+  };
+
+  const getSortIcon = (columnKey) => {
+    if (sortConfig.key !== columnKey) {
+      return null;
+    }
+    return sortConfig.direction === 'ascending' ? 'asc' : 'desc';
+  };
 
   const filteredData = rawData.filter((item) => {
     const keyword = searchTerm.toLowerCase();
@@ -190,7 +215,9 @@ const GroupContractsTable = () => {
       String(item?.GPOContactEmail)?.toLowerCase().includes(keyword)
     );
   });
-  const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+
+  const sortedData = getSortedData(filteredData);
+  const totalPages = Math.ceil(sortedData.length / entriesPerPage);
 
   const generatePagination = () => {
     const pages = [];
@@ -323,7 +350,7 @@ const GroupContractsTable = () => {
             onChange={(e) => {
               setEntriesPerPage(
                 e.target.value === "All"
-                  ? filteredData.length
+                  ? sortedData.length
                   : parseInt(e.target.value)
               );
               setPageCount(0);
@@ -333,7 +360,7 @@ const GroupContractsTable = () => {
             <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
-            <option value={filteredData.length}>All</option>
+            <option value={sortedData.length}>All</option>
           </select>
           <span style={{ marginLeft: "5px" }}>entries</span>
         </div>
@@ -361,11 +388,35 @@ const GroupContractsTable = () => {
         >
           <thead>
             <tr>
-              <th style={{ width: "4px" }}></th>
-              <th style={{ width: "85px" }}>GPO</th>
-              <th style={{ width: "135px" }}>Vendor Name</th>
-              <th style={{ width: "255px" }}>Description</th>
-              <th style={{ width: "55px" }}>Vendor HUB Type</th>
+              <th style={{ width: "4px" }}>Expand</th>
+              <th 
+                style={{ width: "85px", cursor: "pointer" }} 
+                onClick={() => requestSort('GPO')}
+                data-sort={getSortIcon('GPO')}
+              >
+                GPO
+              </th>
+              <th 
+                style={{ width: "135px", cursor: "pointer" }} 
+                onClick={() => requestSort('PrimaryContractSupplier')}
+                data-sort={getSortIcon('PrimaryContractSupplier')}
+              >
+                Vendor Name
+              </th>
+              <th 
+                style={{ width: "255px", cursor: "pointer" }} 
+                onClick={() => requestSort('ContractDescription')}
+                data-sort={getSortIcon('ContractDescription')}
+              >
+                Description
+              </th>
+              <th 
+                style={{ width: "55px", cursor: "pointer" }} 
+                onClick={() => requestSort('VendorHubType')}
+                data-sort={getSortIcon('VendorHubType')}
+              >
+                Vendor HUB Type
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -376,7 +427,7 @@ const GroupContractsTable = () => {
                 </td>
               </tr>
             ) : (
-              filteredData
+              sortedData
                 .slice(
                   pageCount * entriesPerPage,
                   pageCount * entriesPerPage + entriesPerPage
@@ -395,9 +446,9 @@ const GroupContractsTable = () => {
           style={{ display: "flex", alignContent: "center" }}
         >
           Showing{" "}
-          {Math.min(filteredData.length, pageCount * entriesPerPage + 1)} to{" "}
-          {Math.min((pageCount + 1) * entriesPerPage, filteredData.length)} of{" "}
-          {filteredData.length} entries
+          {Math.min(sortedData.length, pageCount * entriesPerPage + 1)} to{" "}
+          {Math.min((pageCount + 1) * entriesPerPage, sortedData.length)} of{" "}
+          {sortedData.length} entries
           {!!searchTerm && (
             <span
               style={{ paddingTop: 0, paddingLeft: 4 }}

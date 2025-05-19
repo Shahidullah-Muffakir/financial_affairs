@@ -1,5 +1,4 @@
-
- table.dataTable td.dt-control {
+table.dataTable td.dt-control {
     text-align: center;
     cursor: pointer
 }
@@ -306,4 +305,51 @@ div.dtsb-searchBuilder button.dtsb-button:hover {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.sort-icon {
+  margin-left: 5px;
+  font-size: 12px;
+  color: #666;
+}
+
+th {
+  position: relative;
+  user-select: none;
+}
+
+th:hover {
+  background-color: #f5f5f5;
+}
+
+th[style*="cursor: pointer"] {
+  padding-right: 20px;
+  position: relative;
+}
+
+th[style*="cursor: pointer"]::before,
+th[style*="cursor: pointer"]::after {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  color: #666;
+  opacity: 0.6;
+}
+
+th[style*="cursor: pointer"]::before {
+  content: "▴";
+  bottom: 50%;
+}
+
+th[style*="cursor: pointer"]::after {
+  content: "▾";
+  top: 50%;
+}
+
+th[style*="cursor: pointer"][data-sort="asc"]::before {
+  opacity: 1;
+}
+
+th[style*="cursor: pointer"][data-sort="desc"]::after {
+  opacity: 1;
 }

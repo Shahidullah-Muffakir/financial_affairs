@@ -164,11 +164,11 @@ const GroupContractsTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url1 = './iasg-gposourcedata-apr2025.xlsx'
-      // const url =
-      //   "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
+      // const url1 = './iasg-gposourcedata-apr2025.xlsx'
+      const url =
+        "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
       try {
-        const response = await axios.get(url1, {
+        const response = await axios.get(url, {
           responseType: "arraybuffer",
         });
         console.log("reponse7777", response);

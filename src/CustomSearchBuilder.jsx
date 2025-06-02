@@ -239,7 +239,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
       <div key={condition.id} className="dtsb-criteria">
         <select
           className="dtsb-data dtsb-dropDown dtsb-italic"
-          value={condition.field}
+          value={condition.field || ''}
           onChange={e => handleFieldChange(condition.id, e.target.value)}
         >
           <option value="" disabled>Data</option>
@@ -250,7 +250,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
         <select
           className="dtsb-condition dtsb-dropDown dtsb-italic"
           autoComplete="hacking"
-          value={condition.condition}
+          value={condition.condition || ''}
           onChange={e => handleConditionChange(condition.id, e.target.value)}
           disabled={!condition.field}
         >
@@ -264,7 +264,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
             showSelectValue ? (
               <select
                 className="dtsb-value dtsb-dropDown dtsb-italic dtsb-select"
-                value={condition.value}
+                value={condition.value || ''}
                 onChange={e => handleValueChange(condition.id, e.target.value)}
                 disabled={!condition.condition}
               >

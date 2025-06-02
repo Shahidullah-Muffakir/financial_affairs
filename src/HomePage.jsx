@@ -256,7 +256,13 @@ const GroupContractsTable = () => {
   const evaluateConditions = (item, conditions) => {
     if (!conditions || conditions.length === 0) return true;
 
-    return conditions.reduce((result, condition, index) => {
+    // Only apply conditions that have both field and condition selected
+    const validConditions = conditions.filter(
+      cond => cond.field && cond.condition
+    );
+    if (validConditions.length === 0) return true;
+
+    return validConditions.reduce((result, condition, index) => {
       const conditionResult = evaluateCondition(item, condition);
       const subConditionsResult = condition.subConditions.length > 0
         ? evaluateConditions(item, condition.subConditions)
@@ -264,7 +270,7 @@ const GroupContractsTable = () => {
 
       if (index === 0) return conditionResult && subConditionsResult;
 
-      const prevCondition = conditions[index - 1];
+      const prevCondition = validConditions[index - 1];
       return prevCondition.logic === 'AND'
         ? result && (conditionResult && subConditionsResult)
         : result || (conditionResult && subConditionsResult);

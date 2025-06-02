@@ -39,43 +39,50 @@ const CustomSearchBuilder = ({ onSearchChange, availableValues }) => {
     if (onSearchChange) onSearchChange(conditions);
   }, [conditions, onSearchChange]);
 
-  const handleFieldChange = (conditionId, field) => {
-    setConditions(prev => prev.map(cond => {
-      if (cond.id === conditionId) {
+  // Recursive update function for nested conditions
+  function updateConditionTree(conds, id, updater) {
+    return conds.map(cond => {
+      if (cond.id === id) {
+        return updater(cond);
+      }
+      if (cond.subConditions && cond.subConditions.length > 0) {
         return {
           ...cond,
-          field,
-          condition: '',
-          value: ''
+          subConditions: updateConditionTree(cond.subConditions, id, updater)
         };
       }
       return cond;
-    }));
+    });
+  }
+
+  const handleFieldChange = (conditionId, field) => {
+    setConditions(prev =>
+      updateConditionTree(prev, conditionId, cond => ({
+        ...cond,
+        field,
+        condition: '',
+        value: ''
+      }))
+    );
   };
 
   const handleConditionChange = (conditionId, condition) => {
-    setConditions(prev => prev.map(cond => {
-      if (cond.id === conditionId) {
-        return {
-          ...cond,
-          condition,
-          value: ''
-        };
-      }
-      return cond;
-    }));
+    setConditions(prev =>
+      updateConditionTree(prev, conditionId, cond => ({
+        ...cond,
+        condition,
+        value: ''
+      }))
+    );
   };
 
   const handleValueChange = (conditionId, value) => {
-    setConditions(prev => prev.map(cond => {
-      if (cond.id === conditionId) {
-        return {
-          ...cond,
-          value
-        };
-      }
-      return cond;
-    }));
+    setConditions(prev =>
+      updateConditionTree(prev, conditionId, cond => ({
+        ...cond,
+        value
+      }))
+    );
   };
 
   const handleLogicToggle = (conditionId) => {

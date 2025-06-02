@@ -637,7 +637,7 @@ const GroupContractsSearch = () => {
                   Group Contracts Search
                 </h1>
               </section>
-              <div className="row">
+              {/* <div className="row">
                 <div className="col-sm-12">
                   <link
                     href="/financialaffairs/css/vendor/datatables.min.css"
@@ -645,7 +645,7 @@ const GroupContractsSearch = () => {
                     type="text/css"
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="row">
                 <div className="col-sm-12">
                   <GroupContractsTable />

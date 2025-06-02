@@ -3,7 +3,10 @@ import "./Tables.css";
 import "./HomePage.css";
 import { useEffect } from "react";
 import * as XLSX from "xlsx";
+
+import CustomSearchBuilder from "./CustomSearchBuilder";
 import axios from "axios";
+import { FIELD_MAPPINGS } from './searchConfig';
 
 // Breadcrumbs Component
 const Breadcrumbs = () => (
@@ -157,14 +160,15 @@ const GroupContractsTable = () => {
     key: null,
     direction: 'ascending'
   });
+  const [searchConditions, setSearchConditions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const url =
-        "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
-
+      const url1 = './iasg-gposourcedata-apr2025.xlsx'
+      // const url =
+      //   "https://stagewww.utrgv.edu/it/_files/documents/iasg-gposourcedata-apr2025.xlsx";
       try {
-        const response = await axios.get(url, {
+        const response = await axios.get(url1, {
           responseType: "arraybuffer",
         });
         console.log("reponse7777", response);
@@ -212,9 +216,64 @@ const GroupContractsTable = () => {
     return sortConfig.direction === 'ascending' ? 'asc' : 'desc';
   };
 
+  const evaluateCondition = (item, condition) => {
+    const fieldConfig = FIELD_MAPPINGS[condition.field];
+    if (!fieldConfig) return false;
+
+    // If the condition requires a value and value is empty, ignore this condition
+    if (!['null', '!null'].includes(condition.condition) && !condition.value) {
+      return true;
+    }
+
+    const value = item[fieldConfig.apiField];
+    const conditionValue = condition.value;
+    switch (condition.condition) {
+      case '=':
+        return String(value).toLowerCase() === String(conditionValue).toLowerCase();
+      case '!=':
+        return String(value).toLowerCase() !== String(conditionValue).toLowerCase();
+      case 'starts':
+        return String(value).toLowerCase().startsWith(String(conditionValue).toLowerCase());
+      case '!starts':
+        return !String(value).toLowerCase().startsWith(String(conditionValue).toLowerCase());
+      case 'contains':
+        return String(value).toLowerCase().includes(String(conditionValue).toLowerCase());
+      case '!contains':
+        return !String(value).toLowerCase().includes(String(conditionValue).toLowerCase());
+      case 'ends':
+        return String(value).toLowerCase().endsWith(String(conditionValue).toLowerCase());
+      case '!ends':
+        return !String(value).toLowerCase().endsWith(String(conditionValue).toLowerCase());
+      case 'null':
+        return value === null || value === undefined || value === '';
+      case '!null':
+        return value !== null && value !== undefined && value !== '';
+      default:
+        return false;
+    }
+  };
+
+  const evaluateConditions = (item, conditions) => {
+    if (!conditions || conditions.length === 0) return true;
+
+    return conditions.reduce((result, condition, index) => {
+      const conditionResult = evaluateCondition(item, condition);
+      const subConditionsResult = condition.subConditions.length > 0
+        ? evaluateConditions(item, condition.subConditions)
+        : true;
+
+      if (index === 0) return conditionResult && subConditionsResult;
+
+      const prevCondition = conditions[index - 1];
+      return prevCondition.logic === 'AND'
+        ? result && (conditionResult && subConditionsResult)
+        : result || (conditionResult && subConditionsResult);
+    }, true);
+  };
+
   const filteredData = rawData.filter((item) => {
     const keyword = searchTerm.toLowerCase();
-    return (
+    const basicSearch = (
       String(item?.GPO)?.toLowerCase().includes(keyword) ||
       String(item?.PrimaryContractSupplier)?.toLowerCase().includes(keyword) ||
       String(item?.ContractDescription)?.toLowerCase().includes(keyword) ||
@@ -223,14 +282,16 @@ const GroupContractsTable = () => {
       String(item?.["Vendor/Reseller"])?.toLowerCase().includes(keyword) ||
       String(item?.VendorContactName)?.toLowerCase().includes(keyword) ||
       String(item?.VendorEmail)?.toLowerCase().includes(keyword) ||
-      String(item?.VendorPhone || "")
-        ?.toLowerCase()
-        .includes(keyword) ||
+      String(item?.VendorPhone || "")?.toLowerCase().includes(keyword) ||
       String(item?.VendorAddress)?.toLowerCase().includes(keyword) ||
       String(item?.ContractLink)?.toLowerCase().includes(keyword) ||
       String(item?.ExpirationDate)?.toLowerCase().includes(keyword) ||
       String(item?.GPOContactEmail)?.toLowerCase().includes(keyword)
     );
+
+    const advancedSearch = evaluateConditions(item, searchConditions);
+
+    return basicSearch && advancedSearch;
   });
 
   const sortedData = getSortedData(filteredData);
@@ -390,11 +451,7 @@ const GroupContractsTable = () => {
           <div className="dtsb-titleRow">
             <div className="dtsb-title">Custom Search Builder</div>
           </div>
-          <div className="dtsb-group">
-            <button className="dtsb-add dtsb-button" type="button">
-              Add Condition
-            </button>
-          </div>
+          <CustomSearchBuilder onSearchChange={setSearchConditions} />
         </div>
         <table
           className="table table-striped table-bordered dataTable no-footer"

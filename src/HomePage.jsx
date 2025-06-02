@@ -463,9 +463,9 @@ const GroupContractsTable = () => {
         className="dataTables_wrapper no-footer"
       >
         <div className="dtsb-searchBuilder">
-          <div className="dtsb-titleRow">
+          {/* <div className="dtsb-titleRow">
             <div className="dtsb-title">Custom Search Builder</div>
-          </div>
+          </div> */}
           <CustomSearchBuilder onSearchChange={setSearchConditions} availableValues={availableValues} />
         </div>
         <table

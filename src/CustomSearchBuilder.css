@@ -1,6 +1,6 @@
  div.dtsb-searchBuilder {
 	width: 99% !important;
-	padding-left: 10px !important;
+	/* padding-left: 10px !important; */
 	padding-right: 10px !important
 }
 
@@ -327,4 +327,16 @@ div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer {
 div.dtsb-searchBuilder div.dtsb-group div.dtsb-logicContainer button.dtsb-logic {
 	min-width: 4em;
 	text-align: center;
+}
+
+.dtsb-value.dtsb-input,
+.dtsb-value.dtsb-select,
+.dtsb-value.dtsb-dropDown {
+	height: 2.4em;
+	padding: .4em;
+	font-size: 1em;
+	border: 1px solid #0069ba;
+	border-radius: 3px;
+	background-color: transparent;
+	box-sizing: border-box;
 }

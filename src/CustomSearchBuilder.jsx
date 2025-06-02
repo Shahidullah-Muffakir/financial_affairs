@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import './shahid.css';
+import './CustomSearchBuilder.css';
 import { FIELD_MAPPINGS } from './searchConfig';
 
 const CONDITIONS = [
@@ -381,7 +381,9 @@ const CustomSearchBuilder = ({ onSearchChange, availableValues }) => {
   return (
     <div className="dtsb-searchBuilder">
       <div className="dtsb-titleRow">
-        <div className="dtsb-title">Custom Search Builder ({countAllConditions(conditions)})</div>
+      <div className="dtsb-title">
+  Custom Search Builder{countAllConditions(conditions) > 0 ? ` (${countAllConditions(conditions)})` : ''}
+</div>
         <button
           type="button"
           className="dtsb-clearAll dtsb-button"

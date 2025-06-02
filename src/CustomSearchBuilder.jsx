@@ -25,7 +25,7 @@ const FIELD_TYPES = {
 const firstField = Object.keys(FIELD_MAPPINGS)[0];
 const firstCondition = CONDITIONS[0].value;
 
-const CustomSearchBuilder = ({ onSearchChange }) => {
+const CustomSearchBuilder = ({ onSearchChange, availableValues }) => {
   const [conditions, setConditions] = useState([{
     id: 1,
     field: '',
@@ -34,26 +34,6 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
     logic: 'AND',
     subConditions: []
   }]);
-
-  const [availableValues, setAvailableValues] = useState({});
-
-  useEffect(() => {
-    // Fetch available values for each field
-    const fetchAvailableValues = async () => {
-      const values = {};
-      for (const [field, config] of Object.entries(FIELD_MAPPINGS)) {
-        try {
-          const response = await fetch(`/api/values/${config.apiField}`);
-          const data = await response.json();
-          values[field] = data;
-        } catch (error) {
-          // fallback: just skip
-        }
-      }
-      setAvailableValues(values);
-    };
-    fetchAvailableValues();
-  }, []);
 
   useEffect(() => {
     if (onSearchChange) onSearchChange(conditions);
@@ -232,7 +212,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
   const renderCondition = (condition, parentId = null, parentConds = conditions) => {
     const fieldConfig = FIELD_MAPPINGS[condition.field] || { type: 'text' };
     const showValueInput = !['null', '!null'].includes(condition.condition);
-    const showSelectValue = showValueInput && availableValues[condition.field] && ['=', '!='].includes(condition.condition);
+    const showSelectValue = showValueInput && availableValues && availableValues[condition.field] && ['=', '!='].includes(condition.condition);
     // Find index in parent
     const idx = parentConds.findIndex(c => c.id === condition.id);
     return (
@@ -267,6 +247,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
                 value={condition.value || ''}
                 onChange={e => handleValueChange(condition.id, e.target.value)}
                 disabled={!condition.condition}
+                key={condition.id + '-select'}
               >
                 <option value="" disabled>Value</option>
                 {availableValues[condition.field]?.map(val => (
@@ -281,6 +262,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
                 placeholder="Value"
                 type={fieldConfig.type === 'date' ? 'date' : 'text'}
                 disabled={!condition.condition}
+                key={condition.id + '-input'}
               />
             )
           ) : (
@@ -289,6 +271,7 @@ const CustomSearchBuilder = ({ onSearchChange }) => {
               value=""
               placeholder="Value"
               disabled
+              key={condition.id + '-empty'}
             />
           )}
         </div>

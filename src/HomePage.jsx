@@ -368,6 +368,15 @@ const GroupContractsTable = () => {
     return pages;
   };
 
+  // Build availableValues from rawData
+  const availableValues = React.useMemo(() => {
+    const values = {};
+    Object.entries(FIELD_MAPPINGS).forEach(([field, config]) => {
+      values[field] = Array.from(new Set(rawData.map(item => item[config.apiField]).filter(Boolean))).sort();
+    });
+    return values;
+  }, [rawData]);
+
   return (
     <div className="container pt-2">
       <p>
@@ -457,7 +466,7 @@ const GroupContractsTable = () => {
           <div className="dtsb-titleRow">
             <div className="dtsb-title">Custom Search Builder</div>
           </div>
-          <CustomSearchBuilder onSearchChange={setSearchConditions} />
+          <CustomSearchBuilder onSearchChange={setSearchConditions} availableValues={availableValues} />
         </div>
         <table
           className="table table-striped table-bordered dataTable no-footer"
